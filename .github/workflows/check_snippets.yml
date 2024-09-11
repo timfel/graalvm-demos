@@ -1,0 +1,27 @@
+name: Check GraalPy guide's snippets
+on:
+  push:
+    paths:
+      - 'graalpy/**'
+      - '.github/workflows/check_graalpy_guides.yml'
+  pull_request:
+    paths:
+      - 'graalpy/**'
+      - '.github/workflows/check_graalpy_guides.yml'
+permissions:
+  contents: read
+jobs:
+  run:
+    name: Check READMEs in graalpy subfolder
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: graalpy-24.1
+      - name: Install dependencies
+        run: |
+          python -m pip install -r .github/scripts/requirements.txt
+      - name: Check README snippets
+        run: find graalpy -name "README.md" -exec python .github/scripts/check_snippets.py "{}" ";"
